@@ -30,8 +30,6 @@ import com.nimbusds.jose.proc.SecurityContext;
 @EnableMethodSecurity
 public class SecurityConfig {
 	
-	//@Autowired
-	//JpaUserDetailsServiceImpl userDetailService;
 	
 	@Autowired RsaKeyProperties rsaKeys;
 	
@@ -80,21 +78,6 @@ public class SecurityConfig {
                 .build();
     }
 	
-	
-//	@Bean
-//	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//		return http
-//				.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**", "/api/v1/auth/**"))
-//				.authorizeHttpRequests(auth -> auth
-//						.requestMatchers("/api/v1/auth/**", "/h2-console/**").permitAll()
-//						.anyRequest().authenticated())
-//				.headers(headers -> headers.frameOptions().sameOrigin())
-//				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//		        .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
-//		        .httpBasic(Customizer.withDefaults())
-//		        .formLogin().disable()
-//				.build();
-//	}
 	
 	@Bean
 	JwtDecoder jwtDecoder() {
