@@ -1,6 +1,8 @@
 package com.ancora.teste.isbn.serviceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +19,6 @@ import com.ancora.teste.isbn.services.UsuarioService;
 import com.ancora.teste.isbn.services.ValidadorCpfService;
 import com.ancora.teste.isbn.specification.SearchSpecification;
 
-
 import lombok.extern.slf4j.Slf4j;
 
 @Component
@@ -31,6 +32,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Autowired UsuarioMapper usuarioMapper;
 	
 	@Override
+	@CachePut(cacheNames = "usuarios", key = "#email")	
 	public ResponseEntity<ApiResponseDTO> createUsuario(UsuarioRequestDTO usuario) {
 		
 		log.info("Registrando Usuario: "+ usuario.getNome());
@@ -73,6 +75,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	}
 
 	@Override
+    @Cacheable(cacheNames = "usuarios", key = "#email")	
 	public ResponseEntity<ApiResponseDTO> listarUsuario(SearchRequestDTO filtros) {
 		
         SearchSpecification<Usuario> specification = new SearchSpecification<>(filtros);
