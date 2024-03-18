@@ -41,7 +41,7 @@ public class LivroServiceImpl implements LivroService {
 	
 	@Override
 	@CachePut(cacheNames = "livros", key = "#isbn")	
-	public ResponseEntity<ApiResponseDTO> buscaLivro(Long isbn) {
+	public ResponseEntity<ApiResponseDTO> buscaLivro(String isbn) {
 		log.info("Buscando ISBN: " + isbn);
 		
 		Livro livro = new Livro();
@@ -79,7 +79,8 @@ public class LivroServiceImpl implements LivroService {
 				.build());
 	}
 	
-	private Livro encontraLivro(Long isbn) throws Exception {
+	@Override
+	public Livro encontraLivro(String isbn) throws Exception {
 		try {
 			log.info("Tentando encontrar livro no banco de dados");
 			Optional<Livro> livroBanco = this.encontraLivroBanco(isbn);
@@ -109,12 +110,12 @@ public class LivroServiceImpl implements LivroService {
 	}
 	
 	@CachePut(cacheNames = "livros", key = "#isbn")	
-	private Optional<Livro> encontraLivroBanco(Long isbn) {
+	private Optional<Livro> encontraLivroBanco(String isbn) {
 		return livroRepo.findByIsbn(isbn);
 	}
 	
 	@CachePut(cacheNames = "livros", key = "#isbn")	
-	private Livro encontraLivroApi(Long isbn)  throws JsonMappingException, JsonProcessingException {
+	private Livro encontraLivroApi(String isbn)  throws JsonMappingException, JsonProcessingException {
 		
 		LivroApiResponseDTO listaLivros = this.buscaDados(ISBN_URI + isbn);
 		
