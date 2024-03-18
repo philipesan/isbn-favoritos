@@ -1,5 +1,7 @@
 package com.ancora.teste.isbn.serviceImpl;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -32,7 +34,6 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Autowired UsuarioMapper usuarioMapper;
 	
 	@Override
-	@CachePut(cacheNames = "usuarios", key = "#email")	
 	public ResponseEntity<ApiResponseDTO> createUsuario(UsuarioRequestDTO usuario) {
 		
 		log.info("Registrando Usuario: "+ usuario.getNome());
@@ -75,7 +76,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	}
 
 	@Override
-    @Cacheable(cacheNames = "usuarios", key = "#email")	
+    @Cacheable(cacheNames = "usuarios", key = "#id")	
 	public ResponseEntity<ApiResponseDTO> listarUsuario(SearchRequestDTO filtros) {
 		
         SearchSpecification<Usuario> specification = new SearchSpecification<>(filtros);
@@ -86,6 +87,96 @@ public class UsuarioServiceImpl implements UsuarioService {
 				.message("Resultados da consulta:")
 				.content(pessoas)
 				.build());
+	}
+
+	@Override
+	public ResponseEntity<ApiResponseDTO> alterarUsuario(UsuarioRequestDTO usuario, Long id) {
+		
+		log.info("Alterando usuário: " + usuario.getNome());
+		Usuario usuarioNovo;
+		
+		if (validadorCpf.validarCpf(usuario.getCpf()) == false) {
+			log.warn("!!!CPF INVALIDO!!!");
+
+			return ResponseEntity.status(422).body(ApiResponseDTO.builder()
+					.message("CPF Invalido")
+					.build());
+		}		
+		
+		try { 
+			Optional<Usuario> usuarioConsulta = usuarioRepo.findById(id);
+			if(usuarioConsulta.isEmpty()) {
+				log.warn("Usuário inexistente, enviando para cadastro");
+				return this.createUsuario(usuario);
+			}
+			
+			
+		} catch (Exception e) {
+			log.warn("Erro inexperado na consulta do usuário");
+			log.error(e.getMessage());
+			return ResponseEntity.status(503).body(ApiResponseDTO.builder()
+					.message("Erro inexperado")
+					.content(e.getMessage())
+					.build());
+		}
+		
+		usuarioNovo = usuarioMapper.toEntity(usuario);
+		usuarioNovo.setId(id);
+		try {
+			usuarioNovo = usuarioRepo.save(usuarioNovo);
+			log.info("Sucesso na Alteração do usuario");
+
+			return ResponseEntity.status(200).body(ApiResponseDTO.builder()
+					.message("Usuario Alterado com Sucesso!")
+					.content(usuarioMapper.toResponseDTO(usuarioNovo))
+					.build());
+
+		} catch (org.springframework.dao.DataIntegrityViolationException e) {
+			log.warn("Violacao de Constraint na tabela usuario");
+			log.error(e.getMessage());
+			return ResponseEntity.status(422).body(ApiResponseDTO.builder()
+					.message("Usuário já cadastrado")
+					.content(e.getMessage())
+					.build());
+		} catch (Exception e) {
+			log.warn("Erro inexperado na criação do usuário");
+			log.error(e.getMessage());
+			return ResponseEntity.status(503).body(ApiResponseDTO.builder()
+					.message("Erro inexperado")
+					.content(e.getMessage())
+					.build());
+		}
+
+	}
+
+	@Override
+	public ResponseEntity<ApiResponseDTO> removerUsuario(Long id) {
+		
+		try {
+			Optional<Usuario> usuarioOpt = usuarioRepo.findById(id);
+			if(usuarioOpt.isEmpty()) {
+				return ResponseEntity.status(400).body(ApiResponseDTO.builder()
+						.message("Usuário inexistente")
+						.build());
+				
+			}
+			
+			usuarioRepo.delete(usuarioOpt.get());
+			
+			return ResponseEntity.status(200).body(ApiResponseDTO.builder()
+					.message("Usuário excluido com sucesso")
+					.build());
+			
+		} catch (Exception e) {
+			log.warn("Erro inexperado na excluir usuário");
+			log.error(e.getMessage());
+			return ResponseEntity.status(503).body(ApiResponseDTO.builder()
+					.message("Erro inexperado")
+					.content(e.getMessage())
+					.build());			
+		}
+		
+		
 	}
 
 }

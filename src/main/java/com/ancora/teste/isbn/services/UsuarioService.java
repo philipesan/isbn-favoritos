@@ -11,4 +11,6 @@ import com.ancora.teste.isbn.dto.responses.ApiResponseDTO;
 public interface UsuarioService {
 	ResponseEntity<ApiResponseDTO> createUsuario(UsuarioRequestDTO usuario);
 	ResponseEntity<ApiResponseDTO> listarUsuario(SearchRequestDTO filtros);
+	ResponseEntity<ApiResponseDTO> alterarUsuario(UsuarioRequestDTO usuario, Long id);
+	ResponseEntity<ApiResponseDTO> removerUsuario(Long id);
 }
