@@ -3,7 +3,10 @@ package com.ancora.teste.isbn.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +29,18 @@ public class UsuarioController {
 	@PreAuthorize("hasAuthority('SCOPE_ROLE_USER')")
 	public ResponseEntity<ApiResponseDTO> createUsuario(@Valid @RequestBody UsuarioRequestDTO usuario) {
 		return usuarioService.createUsuario(usuario);
+	}
+	
+	@PutMapping("/alterar/{id}")
+	@PreAuthorize("hasAuthority('SCOPE_ROLE_USER')")
+	public ResponseEntity<ApiResponseDTO> alterarUsuario(@Valid @RequestBody UsuarioRequestDTO usuario, @PathVariable Long id) {
+		return usuarioService.alterarUsuario(usuario, id);
+	}
+	
+	@DeleteMapping("/remover/{id}")
+	@PreAuthorize("hasAuthority('SCOPE_ROLE_ADMIN')")
+	public ResponseEntity<ApiResponseDTO> removerUsuario(@PathVariable Long id) {
+		return usuarioService.removerUsuario(id);
 	}
 	
 	@PostMapping("/listar")
