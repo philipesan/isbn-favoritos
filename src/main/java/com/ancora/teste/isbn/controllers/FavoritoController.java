@@ -3,6 +3,7 @@ package com.ancora.teste.isbn.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,5 +28,17 @@ public class FavoritoController {
 	@PreAuthorize("hasAuthority('SCOPE_ROLE_USER')")
 	public ResponseEntity<ApiResponseDTO> removerFavorito(@PathVariable Long id, @PathVariable String isbn) {
 		return favoritoService.removerFavorito(id, isbn);
+	}
+	
+	@GetMapping("/listar/{id}")
+	@PreAuthorize("hasAuthority('SCOPE_ROLE_USER')")
+	public ResponseEntity<ApiResponseDTO> listarFavorito(@PathVariable Long id) {
+		return favoritoService.listarFavoritos(id);
+	}
+	
+	@GetMapping("/listar/{id}/{isbn}")
+	@PreAuthorize("hasAuthority('SCOPE_ROLE_USER')")
+	public ResponseEntity<ApiResponseDTO> listarFavoritoDetalhe(@PathVariable Long id, @PathVariable String isbn) {
+		return favoritoService.listarFavoritosDetalhe(id, isbn);
 	}
 }

@@ -100,6 +100,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 		
 		log.info("Alterando usuário: " + usuario.getNome());
 		Usuario usuarioNovo;
+		Optional<Usuario> usuarioConsulta;
 		
 		if (validadorCpf.validarCpf(usuario.getCpf()) == false) {
 			log.warn("!!!CPF INVALIDO!!!");
@@ -110,7 +111,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 		}		
 		
 		try { 
-			Optional<Usuario> usuarioConsulta = usuarioRepo.findById(id);
+			usuarioConsulta = usuarioRepo.findById(id);
 			if(usuarioConsulta.isEmpty()) {
 				log.warn("Usuário inexistente, enviando para cadastro");
 				return this.createUsuario(usuario);
@@ -127,6 +128,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 		}
 		
 		usuarioNovo = usuarioMapper.toEntity(usuario);
+		usuarioNovo.setFavoritos(usuarioConsulta.get().getFavoritos());
+		usuarioNovo.setCriacao(usuarioConsulta.get().getCriacao());
 		usuarioNovo.setId(id);
 		try {
 			usuarioNovo = usuarioRepo.save(usuarioNovo);
