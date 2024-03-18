@@ -13,4 +13,5 @@ public interface UsuarioService {
 	ResponseEntity<ApiResponseDTO> listarUsuario(SearchRequestDTO filtros);
 	ResponseEntity<ApiResponseDTO> alterarUsuario(UsuarioRequestDTO usuario, Long id);
 	ResponseEntity<ApiResponseDTO> removerUsuario(Long id);
+	
 }

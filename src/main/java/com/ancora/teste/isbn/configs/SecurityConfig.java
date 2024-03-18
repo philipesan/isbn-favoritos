@@ -37,7 +37,9 @@ public class SecurityConfig {
     @Order(1)
     public SecurityFilterChain oauth2SecurityFilterChain(HttpSecurity http) throws Exception {
         return http
-        		.securityMatcher("/api/v1/usuario/**", "/api/v1/livro/**")
+        		.securityMatcher("/api/v1/usuario/**"
+        				, "/api/v1/livro/**"
+        				, "/api/v1/favorito/**")
         		.csrf(csrf -> csrf
         				.ignoringRequestMatchers("/h2-console/**"))
 		        .authorizeHttpRequests(auth -> auth

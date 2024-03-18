@@ -1,8 +1,11 @@
 package com.ancora.teste.isbn.serviceImpl;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -47,6 +50,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 		}
 		
 		Usuario novoUsuario = usuarioMapper.toEntity(usuario);
+		novoUsuario.setCriacao(LocalDateTime.now());
+		novoUsuario.setFavoritos(Set.of());
 		
 		try {
 			novoUsuario = usuarioRepo.save(novoUsuario);
@@ -76,7 +81,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	}
 
 	@Override
-    @Cacheable(cacheNames = "usuarios", key = "#id")	
+    @Cacheable(cacheNames = "usuario")	
 	public ResponseEntity<ApiResponseDTO> listarUsuario(SearchRequestDTO filtros) {
 		
         SearchSpecification<Usuario> specification = new SearchSpecification<>(filtros);
@@ -90,6 +95,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	}
 
 	@Override
+    @CachePut(cacheNames = "usuario")	
 	public ResponseEntity<ApiResponseDTO> alterarUsuario(UsuarioRequestDTO usuario, Long id) {
 		
 		log.info("Alterando usuário: " + usuario.getNome());
@@ -150,6 +156,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	}
 
 	@Override
+    @CacheEvict(cacheNames = "usuario")	
 	public ResponseEntity<ApiResponseDTO> removerUsuario(Long id) {
 		
 		try {

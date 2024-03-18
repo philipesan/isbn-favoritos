@@ -16,7 +16,7 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class LivroResponseDTO {
 
-		private Long isbn;
+		private String isbn;
 		private String titulo;
 		private String subtitulo;
 		private String autores;

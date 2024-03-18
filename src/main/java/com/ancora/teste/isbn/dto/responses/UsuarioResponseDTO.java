@@ -1,6 +1,7 @@
 package com.ancora.teste.isbn.dto.responses;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -23,4 +24,5 @@ public class UsuarioResponseDTO {
 	private String email;
 	private String cpf;
 	private LocalDateTime criacao;
+	private Set<LivroResponseDTO> favoritos;
 }

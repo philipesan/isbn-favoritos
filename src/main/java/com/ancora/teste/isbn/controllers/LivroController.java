@@ -21,7 +21,7 @@ public class LivroController {
 	
 	@GetMapping(path=("/busca/{isbn}"))
 	@PreAuthorize("hasAuthority('SCOPE_ROLE_USER')")
-	public ResponseEntity<ApiResponseDTO> listaDocumentos(@PathVariable Long isbn) {
+	public ResponseEntity<ApiResponseDTO> listaDocumentos(@PathVariable String isbn) {
 		return livroService.buscaLivro(isbn);
 	}
 }
