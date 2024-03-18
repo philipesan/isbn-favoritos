@@ -5,6 +5,9 @@ Desenvolvido utilizando Java Springboot, banco de dados H2 na IDE Spring Tools S
 **Documentação dos Endpoints:** 
 https://www.postman.com/philipesan123/workspace/isbn-ancora
 
+**Porta padrão da aplicação**
+***http://localhost:8080***
+
 ## Introdução:
 Este projeto foi realizado de acordo com o solicitado no desafio, baseado em um software para gerenciamento de favoritos e usuários utilizando consulta em API e cacheing.
 
@@ -43,7 +46,7 @@ Clonar o repositório da aplicação com o comando :
 Após isso, no diretória que foi criado, executar os comando:
 
     docker compose up --build
-Após isso, se a aplicação for buildada com sucesso, ela estará disponível na porta 8080 do seu localhost.
+Após isso, se a aplicação for buildada com sucesso, ela estará disponível na porta padrão para consumo.
 
 ### Maven
 
@@ -51,3 +54,4 @@ Após clonar o diretório do git, executar os seguintes comandos:
 
     mvn clean install
     mvn spring-boot:run
+Após isso, se a aplicação for buildada com sucesso, ela estará disponível na porta padrão para consumo.
