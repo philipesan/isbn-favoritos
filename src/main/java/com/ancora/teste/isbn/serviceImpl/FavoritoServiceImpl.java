@@ -44,7 +44,6 @@ public class FavoritoServiceImpl implements FavoritoService {
 
 	
 	@Override
-    @Cacheable(cacheNames = "usuario")	
 	public ResponseEntity<ApiResponseDTO> adicionarFavorito(Long id, String isbn) {
 	
 		log.info("Adicionando livro: " + isbn + " ao usuário: " + id);
@@ -55,6 +54,7 @@ public class FavoritoServiceImpl implements FavoritoService {
 			Optional<Usuario> usuarioOpt = usuarioRepo.findById(id);
 			
 			if(usuarioOpt.isEmpty()) {
+				log.warn("Usuário não encontrado");
 				return ResponseEntity.status(400).body(ApiResponseDTO.builder()
 						.message("Usuário inexistente")
 						.build());
@@ -77,7 +77,8 @@ public class FavoritoServiceImpl implements FavoritoService {
 			livro = livroService.encontraLivro(isbn);
 			
 		} catch (Exception e) {
-			
+			log.warn("Erro inexperado");
+			log.error(e.getMessage());
 			return ResponseEntity.status(503).body(ApiResponseDTO.builder()
 					.message("Erro ao buscar livro!")
 					.content(e.getMessage())
@@ -147,7 +148,7 @@ public class FavoritoServiceImpl implements FavoritoService {
 			
 			Optional<Livro> livroOpt = livroRepo.findByIsbn(isbn);
 			
-			if(usuarioOpt.isEmpty()) {
+			if(livroOpt.isEmpty()) {
 				return ResponseEntity.status(400).body(ApiResponseDTO.builder()
 						.message("Livro inexistente")
 						.build());
@@ -182,6 +183,84 @@ public class FavoritoServiceImpl implements FavoritoService {
 				.message("Favorito Removido com sucesso")
 				.content(usuarioResponse)
 				.build());	
+
+	}
+
+	@Override
+	public ResponseEntity<ApiResponseDTO> listarFavoritos(Long id) {
+		Usuario usuario = new Usuario();
+		
+		try {
+			
+			Optional<Usuario> usuarioOpt = usuarioRepo.findById(id);
+			
+			if(usuarioOpt.isEmpty()) {
+				log.warn("Usuário não encontrado");
+				return ResponseEntity.status(400).body(ApiResponseDTO.builder()
+						.message("Usuário inexistente")
+						.build());
+				
+			}
+			
+			usuario = usuarioOpt.get();
+			
+		} catch (Exception e) {
+			log.warn("Erro inexperado ao adicionar favorito");
+			log.error(e.getMessage());
+			return ResponseEntity.status(503).body(ApiResponseDTO.builder()
+					.message("Erro inexperado")
+					.content(e.getMessage())
+					.build());			
+		}
+		
+		return ResponseEntity.status(200).body(ApiResponseDTO.builder()
+				.message("Favoritos listados")
+				.content(usuario
+						.getFavoritos()
+						.stream()
+						.map(livroMapper::toResponseDTO)
+						.collect(Collectors.toSet()))
+				.build());
+
+	}
+
+	@Override
+	public ResponseEntity<ApiResponseDTO> listarFavoritosDetalhe(Long id, String isbn) {
+		Usuario usuario = new Usuario();
+		
+		try {
+			
+			Optional<Usuario> usuarioOpt = usuarioRepo.findById(id);
+			
+			if(usuarioOpt.isEmpty()) {
+				log.warn("Usuário não encontrado");
+				return ResponseEntity.status(400).body(ApiResponseDTO.builder()
+						.message("Usuário inexistente")
+						.build());
+				
+			}
+			
+			usuario = usuarioOpt.get();
+			
+		} catch (Exception e) {
+			log.warn("Erro inexperado ao adicionar favorito");
+			log.error(e.getMessage());
+			return ResponseEntity.status(503).body(ApiResponseDTO.builder()
+					.message("Erro inexperado")
+					.content(e.getMessage())
+					.build());			
+		}
+		
+		Livro livro = usuario.getFavoritos()
+				.stream()
+                .filter(favorito -> favorito.getIsbn().equals(isbn))
+                .findFirst()
+                .orElse(null);
+		
+		return ResponseEntity.status(200).body(ApiResponseDTO.builder()
+				.message("Detalhes listados")
+				.content(livroMapper.toResponseDTO(livro))
+				.build());
 
 	}
 

@@ -9,6 +9,7 @@ import com.ancora.teste.isbn.dto.responses.ApiResponseDTO;
 public interface FavoritoService {
 	
 	ResponseEntity<ApiResponseDTO> adicionarFavorito(Long id, String isbn);
-
 	ResponseEntity<ApiResponseDTO> removerFavorito(Long id, String isbn);
+	ResponseEntity<ApiResponseDTO> listarFavoritos(Long id);
+	ResponseEntity<ApiResponseDTO> listarFavoritosDetalhe(Long id, String isbn);
 }
