@@ -5,6 +5,9 @@ Desenvolvido utilizando Java Springboot, banco de dados H2 na IDE Spring Tools S
 **Documentação dos Endpoints:** 
 https://www.postman.com/philipesan123/workspace/isbn-ancora
 
+**Porta padrão da aplicação**
+***http://localhost:8080***
+
 ## Introdução:
 Este projeto foi realizado de acordo com o solicitado no desafio, baseado em um software para gerenciamento de favoritos e usuários utilizando consulta em API e cacheing.
 
